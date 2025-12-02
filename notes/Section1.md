@@ -1,5 +1,5 @@
-#Intro
-##services we'll learn
+# Intro
+## services we'll learn
 ### Analytics
  - Amazon EMR
  - AWS Lake Formation
@@ -48,3 +48,36 @@
  - Amazon API Gateway
 ### ML
  - Amazon Sagemaker
+### Management and Governance
+ - CloudFormation
+ - CloudTrail
+ - CloudWatch
+ - Config
+ - Managed Grafana
+ - Systems Manager
+ - Well-architected Tool
+### Migration and Transfer
+ - Application Discovery Service
+ - Application Migration Service
+ - Database Migration Service
+ - DataSync
+ - Transfer Family
+ - Snow Family
+### Networking and Content Delivery
+ - CloudFront
+ - PrivateLink
+ - Route 53
+ - VPC
+### Securty, Identity and Compliance
+ - IAM
+ - KMS
+ - Secrets Manager
+ - Macie
+ - Shield
+ - WAF (Firewall)
+### Storage
+ - AWS Backup
+ - Elastic Block Store
+ - Elastic File System
+ - S3
+
