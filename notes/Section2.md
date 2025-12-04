@@ -100,7 +100,7 @@ Agility:
 Use a Data Warehouse when you have structured data sources and reqwuire fast complex queries.
 Data integration from different sources is essential. Buesiness Intelligence are primary usecases
 
-Use DataLake when you have a mix of data structuredness, you need a scaleable and cost effective solution to store massive amounts of data. Need discoverability.
+Use DataLake when you have a mix of data structuredness, you need a scalable and cost effective solution to store massive amounts of data. Need discoverability.
 
 Data Lakehouse:
 Hybrid data architecture combining best of both worlds.
@@ -112,4 +112,52 @@ Coined in 2019; it's more about governance and organization.
 
 Individual teams own their own data, they own data products within a given domain.
 
+Domain Based data management. Federated governance with central standards.
 
+## ETL Pipelines
+ETL stands for Extract, Transform, Load. It's a process used to move data from source systems into a data warehouse. (For Lake ELT).
+### Extract:
+ - Retrieve raw data from source systems which can be databases, CRMs, flat files, APIs, or other repositories
+ - Ensure data integrity during the extraction phase.
+ - Can be done in real-time or in batches, depending on requirements.
+
+### Transform
+ - Convert the extracted data into a format suitable for the target data warehouse
+ - Cleansing (removing duplicates, fixing errors)
+ - Data enrichment (adding additional data)
+ - Format changes (e.g. datetime formatting)
+ - Aggregations or computations (totals, averages)
+ - Encoding or decoding
+ - Handling missing data
+
+### Load
+ - Move transformed data into the target data warehouse
+ - Can be done in batches (all at once) or in a streaming manner (as data becomes available)
+ - Ensure that data maintains it's integrity during the loading phase.
+
+### Managing ETL Pipelines
+ - This process must be automated in some reliable way
+ - AWS Glue
+ - Orchestration services: [EventBridge, Amazon Managed Workflows for Apache AirFlow, AWS Step functions, Lambda, Glue workflows]
+ - specific architectures later...
+
+### Data Sources
+ - JDBC: Java database connectivity, Platform independent, language dependent.
+ - ODBC: Open Database Connectivity, Platform dependent, Language independent.
+ - Raw Logs
+ - API's
+ - Streams
+
+### Common Data Formats
+ - CSV
+ - Json
+ - AVRO: Binary format that stores both the data and it's schema, allowing it to be processed later with different systems without needing the original's system context.
+ Use AVRO with big data and real-time processing systems.
+ When schema evolution is needed.
+ Efficient serialization for data transport between systems.
+ Kafka, spark, flink and hadoop use AVRO
+
+ - Parquet: Columnar storage format, optimized for analytics, allows for efficient compression and encoding systems.
+ Good for analyzing large datasets with analytics engines. Use cases where reading specifgic columns instead of entire records is beneficial. Useful for storing data on distributed systems where IO operations and storage need optimization.
+ Hadoop, Spark, Hive, Impala and Redshift Spectrum.
+ 
