@@ -161,3 +161,156 @@ ETL stands for Extract, Transform, Load. It's a process used to move data from s
  Good for analyzing large datasets with analytics engines. Use cases where reading specifgic columns instead of entire records is beneficial. Useful for storing data on distributed systems where IO operations and storage need optimization.
  Hadoop, Spark, Hive, Impala and Redshift Spectrum.
  
+
+ ## Data Modelling
+
+ Star Schema:
+  - Fact tables
+  - dimension tables from fact tables
+  - primary / foreign keys
+
+Data Lineage: 
+ - visual representation that traces the flow and transformation of data through it's lifecycle from it's source to its final destintation
+ - importance: helps in tracking errors back to their source
+ - ensures compliance with regulations
+ - provides clear understanding of how data is moved within systems
+
+Example of data lineage within AWS:
+ - Uses spline agent (for spark) attached to Glue
+ - Dump lineage data into Neptune (graph db) via Lambda
+
+Schema Evolution:
+ - The ability to adapt and change the schema of a data set over time without disrupting existing processes or systems
+ - ensures data can adapt to changing business requirements
+ - allows for the addition, removal or modification of columns/fields in a dataset
+ - maintains backwards compatability
+ EG. Glue Schema Regsitry
+
+## Database Performance Optimization
+INDEXING
+ - avoid full table scans
+ - enforce data uniqueness and integrity
+PARTITIONING
+ - reduce amount of data scanned
+ - helps with the data lifecycle management
+ - Enables parallel processing
+COMPRESSION
+ - Speed up data transfer, reduce storage & disk reads
+ GZIP, LZOP, BZIP2 and ZSTD (Redshift examples)
+ - Columnar compression
+
+## Data sampling techniques
+Random sampling
+ - everything has an equal change
+ - Stratified Sampling: divide population into homogeneous subgroups (strata), Random sample within each stratum,
+ Ensures representation of each subgroup.
+ - Systemic, cluster, convenience and judgemental
+
+## Data Skew Mechanisms
+ - refers to unequal distribution across partitions
+ - imagine you're IMDB, Brad Pitt could overload his partition
+ - important to monitor data's distribution and alert when skew issues arise.
+How to fix:
+ - adaptive partitioning: dynamically adjust partitions
+ - salting: introduce a random factor or "salt" to the data to distribute it more uniformly
+ - repartitioning
+ - sampling > diagnostic not a fix
+
+ ## Data Validation and Profiling
+Completeness:
+ - ensures all required data is present and no essential parts are missing
+ - Checks, missing valus, null counts, percentage of populated fields
+ - importance, missing data can lead to innacurate analyses and insights
+
+Consistency:
+ - ensures data values are consistent across datasets and do not contradict each other
+ - cross field validation comparing data from different sources or periods
+ - inconsistant data can cause confusion and result in incorrect conclusions
+
+Accuracy:
+ - ensures data is correct, reliable and represents what is is supposed to
+ - comparint with trusted sources or sanity check distributions
+
+Integrity:
+ - ensures data maintains its correctness and consistency over its lifecycle and across systems
+ - referential integrity
+
+## Aggregations
+COUNT - Select COUNT(*) AS total_rows FROM employees; 
+SUM - SELECT SUM(salary) AS total_salary FROM employees;
+AVG - SELECT AVG(salary) AS average_salary FROM employees;
+MAX/MIN - SELECT MAX(salary) as highest_salary FROM employees;
+
+WHERE - SELECT COUNT(*) AS high_salary_count FROM employees WHERE salary > 70000;
+
+One way to apply multiple filters to what you're aggregating.
+```
+SELECT
+  COUNT (CASE WHEN salary > 70000 THEN 1 END) AS high_salary_count,
+  COUNT (CASE WHEN salary BETWEEN 50000 AND 70000 THEN 1 END) AS medium_salary_count,
+  COUNT (CASE WHEN salary < 50000 THEN 1) AS low_salary_count
+FROM employees;
+```
+
+GROUPING!
+```
+SELECT department_id, COUNT(*) AS number_of_employees
+FROM employees
+WHERE join_date > '2020-01-01'
+GROUP BY department_id;
+```
+
+NESTED GROUPING.
+```
+SELECT 
+    Region, 
+    Category, 
+    SUM(Amount) AS Total_Sales
+FROM Sales
+GROUP BY Region, Category
+ORDER BY Region, Category;
+```
+
+example outout:
+```
++---------+-------------+-------------+
+| Region  | Category    | Total_Sales |
++---------+-------------+-------------+
+| North   | Electronics |         800 |
+| North   | Furniture   |         200 |
+| South   | Electronics |         400 |
+| South   | Furniture   |         700 |
++---------+-------------+-------------+
+```
+
+Pivoting
+The act of turning row-level data into columnar data
+Very db specific.
+let's imagine we have a sales table that contains sales amounts and the salesperson in each row but we want a report by salesperson.
+```
++---------+-------------+-------------+
+| Region  | Category    | Total_Sales |
++---------+-------------+-------------+
+| North   | Electronics |         800 |
+| North   | Furniture   |         200 |
+| South   | Electronics |         400 |
+| South   | Furniture   |         700 |
++---------+-------------+-------------+
+
+SELECT 
+    Region,
+    SUM(CASE WHEN Category = 'Electronics' THEN Amount ELSE 0 END) AS Electronics,
+    SUM(CASE WHEN Category = 'Furniture' THEN Amount ELSE 0 END) AS Furniture
+FROM Sales
+GROUP BY Region;
+
++---------+-------------+-----------+
+| Region  | Electronics | Furniture |
++---------+-------------+-----------+
+| North   |         800 |       200 |
+| South   |         400 |       700 |
++---------+-------------+-----------+
+```
+
+
+## GIT
